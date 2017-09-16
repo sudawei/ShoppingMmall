@@ -145,7 +145,7 @@ public class ProductServiceImpl implements IProductService {
      * @param pageSize
      * @return
      */
-    @GetCache(name="getProductList",value = "30")
+    //@GetCache(name="getProductList",value = "30")
     public ServerResponse<PageInfo> getProductList(int pageNum,int pageSize){
         //startPage
         //填充分页SQL逻辑
