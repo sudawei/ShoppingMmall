@@ -248,7 +248,7 @@ public class ProductServiceImpl implements IProductService {
             categoryIdList = iCategoryService.getCategoryAndDeepChildrenCategory(categoryId).getData();
         }
 
-        if(StringUtils.isBlank(keyword)){
+        if(StringUtils.isNotBlank(keyword)){
             keyword = new StringBuffer().append("%").append(keyword).append("%").toString();
         }
 
@@ -260,7 +260,7 @@ public class ProductServiceImpl implements IProductService {
                 PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
             }
         }
-        List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isNotBlank(keyword)?null:keyword,
+        List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword)?null:keyword,
                 categoryIdList.size()==0?null:categoryIdList);
 
         List<ProductListVo> productListVoList = Lists.newArrayList();
