@@ -37,7 +37,7 @@ public class ProductController {
      * @param keyword
      * @param categoryId
      * @param pageNum
-     * @param pageSzie
+     * @param pageSize
      * @param orderBy
      * @return
      */
@@ -46,8 +46,8 @@ public class ProductController {
     public ServerResponse<PageInfo> list(@RequestParam(value = "keyword",required = false)String keyword,
                                          @RequestParam(value = "categoryId",required = false) Integer categoryId,
                                          @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
-                                         @RequestParam(value = "pageSzie",defaultValue = "10") int pageSzie,
+                                         @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                          @RequestParam(value = "orderBy",required = false)String orderBy){
-        return iProductService.getProductByKeywordCategory(keyword,categoryId,pageNum,pageSzie,orderBy);
+        return iProductService.getProductByKeywordCategory(keyword,categoryId,pageNum,pageSize,orderBy);
     }
 }

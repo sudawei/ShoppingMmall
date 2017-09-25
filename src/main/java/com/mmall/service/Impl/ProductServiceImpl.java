@@ -227,10 +227,10 @@ public class ProductServiceImpl implements IProductService {
      * @param keyword
      * @param categoryId
      * @param pageNum
-     * @param pageSzie
+     * @param pageSize
      * @return
      */
-    public ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer categoryId,int pageNum,int pageSzie,String orderBy){
+    public ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer categoryId,int pageNum,int pageSize,String orderBy){
         if(StringUtils.isBlank(keyword) && categoryId == null){
             return  ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEAGAL_ARGUMENT.getCode(),ResponseCode.ILLEAGAL_ARGUMENT.getDesc());
         }
@@ -240,7 +240,7 @@ public class ProductServiceImpl implements IProductService {
         if(categoryId != null){
             Category category = categoryMapper.selectByPrimaryKey(categoryId);
             if(category == null && StringUtils.isBlank(keyword)){
-                PageHelper.startPage(pageNum,pageSzie);
+                PageHelper.startPage(pageNum,pageSize);
                 List<ProductListVo> productListVoList = Lists.newArrayList();
                 PageInfo pageInfo = new PageInfo(productListVoList);
                 return ServerResponse.createBySuccess(pageInfo);
@@ -252,7 +252,7 @@ public class ProductServiceImpl implements IProductService {
             keyword = new StringBuffer().append("%").append(keyword).append("%").toString();
         }
 
-        PageHelper.startPage(pageNum,pageSzie);
+        PageHelper.startPage(pageNum,pageSize);
         //动态排序处理
         if(StringUtils.isNotBlank(orderBy)){
             if(Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
