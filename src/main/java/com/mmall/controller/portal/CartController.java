@@ -43,7 +43,7 @@ public class CartController {
     public ServerResponse<CartVo> list(HttpSession session){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.list(user.getId());
     }
@@ -146,7 +146,7 @@ public class CartController {
     public ServerResponse<CartVo> update(HttpSession session, Integer count, Integer productId){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.update(user.getId(),count,productId);
     }
@@ -162,7 +162,7 @@ public class CartController {
     public ServerResponse<CartVo> delete(HttpSession session, String  productIds){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.delete(user.getId(),productIds);
     }
@@ -178,7 +178,7 @@ public class CartController {
     public ServerResponse<CartVo> selectAll(HttpSession session){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.selectOrUnselect(user.getId(),null,Const.Cart.CHECKD);
     }
@@ -193,7 +193,7 @@ public class CartController {
     public ServerResponse<CartVo> unSelectAll(HttpSession session){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.selectOrUnselect(user.getId(),null,Const.Cart.UN_CHECKD);
     }
@@ -209,7 +209,7 @@ public class CartController {
     public ServerResponse<CartVo> select(HttpSession session,Integer productId){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.selectOrUnselect(user.getId(),productId,Const.Cart.CHECKD);
     }
@@ -225,7 +225,7 @@ public class CartController {
     public ServerResponse<CartVo> unSelectAll(HttpSession session,Integer productId){
         User user =(User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，无法添加购物车");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.selectOrUnselect(user.getId(),productId,Const.Cart.UN_CHECKD);
     }
