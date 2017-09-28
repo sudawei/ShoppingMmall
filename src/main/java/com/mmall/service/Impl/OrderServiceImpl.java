@@ -282,7 +282,7 @@ public class OrderServiceImpl implements IOrderService {
      */
     private void cleanCart(List<Cart> cartList){
         for(Cart cart : cartList){
-            cartMapper.updateByPrimaryKeySelective(cart);
+            cartMapper.deleteByPrimaryKey(cart.getId());
         }
     }
 
