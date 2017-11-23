@@ -3,7 +3,7 @@ package com.mmall.service.Impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.mmall.cache.GetCache;
+
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
@@ -43,7 +43,7 @@ public class ProductServiceImpl implements IProductService {
      * @param product
      * @return
      */
-    @GetCache
+
     public ServerResponse saveOrUpdateProduct(Product product){
         if(product != null){
             if(StringUtils.isNotBlank(product.getSubImages())){//如果子图不为空
