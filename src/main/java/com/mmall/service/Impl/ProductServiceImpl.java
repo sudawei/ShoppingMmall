@@ -43,7 +43,6 @@ public class ProductServiceImpl implements IProductService {
      * @param product
      * @return
      */
-
     public ServerResponse saveOrUpdateProduct(Product product){
         if(product != null){
             if(StringUtils.isNotBlank(product.getSubImages())){//如果子图不为空
