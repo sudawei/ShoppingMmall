@@ -27,7 +27,7 @@ public class CookieUtil {
         Cookie cookie = new Cookie(COOKIE_NAME, token);
         cookie.setDomain(COOKIE_DOMAIN);
         cookie.setPath("/");
-
+        cookie.setHttpOnly(true);
         //cookie有效期，单位为秒，-1表示永久；如果不设置，则保存在内存中，只在当前页面有效，不会写入硬盘
         cookie.setMaxAge(60 * 60);
         log.info("write cookieName:{} , cookieValue:{}",cookie.getName(),cookie.getValue());
