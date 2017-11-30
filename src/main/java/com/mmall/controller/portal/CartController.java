@@ -6,7 +6,11 @@ import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Cart;
 import com.mmall.pojo.User;
 import com.mmall.service.ICartService;
+import com.mmall.util.CookieUtil;
+import com.mmall.util.JsonUtil;
+import com.mmall.util.RedisPoolUtil;
 import com.mmall.vo.CartVo;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -35,13 +39,18 @@ public class CartController {
 
     /**
      * 查询购物车中的商品
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse<CartVo> list(HttpSession session){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<CartVo> list(HttpServletRequest request){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -49,85 +58,15 @@ public class CartController {
     }
 
 
-    /**
-     * 添加商品到购物车
-     * @param session
-     * @param count
-     * @param productId
-     * @return
-     */
-//    @RequestMapping("add.do")
-//    @ResponseBody
-//    public ServerResponse add(
-//            HttpServletRequest request, HttpServletResponse response,
-//            HttpSession session, Integer count, Integer productId )
-//            throws  IOException {
-//
-//       //将对象转换成json字符串/json字符串转成对象
-//        ObjectMapper om = new ObjectMapper();
-//        om.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-//        Cart cookieCart = null;
-//        //获取cookie中的购物车
-//        Cookie[] cookies = request.getCookies();
-//        if(cookies != null && cookies.length > 0){
-//            for(Cookie cookie : cookies){
-//                if((Const.CURRENT_COOKIES+"_"+productId.toString()).equals(cookie.getName())){
-//                    cookieCart = om.readValue(cookie.getValue(),Cart.class);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        //cookie中的没有购物车
-//        if(cookieCart == null){
-//            //将当前商品组装成cart对象
-//            if(count == null || productId == null){
-//                return  ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEAGAL_ARGUMENT.getCode(),ResponseCode.ILLEAGAL_ARGUMENT.getDesc());
-//            }
-//            cookieCart = new Cart();
-//            cookieCart.setQuantity(count);
-//            cookieCart.setProductId(productId);
-//        }else{  //此时已经存在该商品的cookie,则需要做商品数量相加
-//            cookieCart.setQuantity(count + cookieCart.getQuantity());
-//        }
-//
-//        User user =(User) session.getAttribute(Const.CURRENT_USER);
-//        if(user != null){
-//            //先将cookie中的所有的购物车添加至数据库
-//            for(Cookie cookie : cookies){
-//                if(cookie.getName().matches(Const.CURRENT_COOKIES +"_"+ "\\d+")){
-//                    cookieCart = om.readValue(cookie.getValue(),Cart.class);
-//                    iCartService.add(user.getId(),cookieCart.getQuantity(),cookieCart.getProductId());
-//                    //清空Cookie 设置存活时间为0, 立马销毁
-//                    cookie.setPath("/");
-//                    cookie.setMaxAge(-0);
-//                    response.addCookie(cookie);
-//                }
-//            }
-//            //添加本次的新建购物车
-//            iCartService.add(user.getId(),count,productId);
-//            return ServerResponse.createBySuccess("购物车成功添加到数据库中！");
-//        }else{
-//            //未登录,将保存购物车到Cookie中
-//            Writer w = new StringWriter();
-//            om.writeValue(w,cookieCart);
-//            Cookie cookie = new Cookie(Const.CURRENT_COOKIES+"_"+productId.toString(),w.toString());
-//            //设置path是可以共享cookie
-//            cookie.setPath("/");
-//            //设置Cookie过期时间: -1 表示关闭浏览器失效  0: 立即失效  >0: 单位是秒, 多少秒后失效
-//            cookie.setMaxAge(24*60*60);
-//            //Cookie写回浏览器
-//            response.addCookie(cookie);
-//            return ServerResponse.createBySuccess("购物车成功添加到cookie中",cookie);
-//        }
-//
-//
-//    }
-
     @RequestMapping("add.do")
     @ResponseBody
-    public ServerResponse<CartVo> add(HttpSession session, Integer count, Integer productId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<CartVo> add(HttpServletRequest request, Integer count, Integer productId){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -136,15 +75,20 @@ public class CartController {
 
     /**
      * 更新购物车中的商品
-     * @param session
+     * @param request
      * @param count
      * @param productId
      * @return
      */
     @RequestMapping("update.do")
     @ResponseBody
-    public ServerResponse<CartVo> update(HttpSession session, Integer count, Integer productId){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<CartVo> update(HttpServletRequest request, Integer count, Integer productId){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -153,14 +97,19 @@ public class CartController {
 
     /**
      * 删除购物车中的商品
-     * @param session
+     * @param request
      * @param productIds
      * @return
      */
     @RequestMapping("delete.do")
     @ResponseBody
-    public ServerResponse<CartVo> delete(HttpSession session, String  productIds){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<CartVo> delete(HttpServletRequest request, String  productIds){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -170,13 +119,18 @@ public class CartController {
 
     /**
      * 全选购物车中的商品
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping("select_all.do")
     @ResponseBody
-    public ServerResponse<CartVo> selectAll(HttpSession session){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<CartVo> selectAll(HttpServletRequest request){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -185,13 +139,18 @@ public class CartController {
 
     /**
      * 全反选购物车中的商品
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping("un_select_all.do")
     @ResponseBody
-    public ServerResponse<CartVo> unSelectAll(HttpSession session){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<CartVo> unSelectAll(HttpServletRequest request){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -201,14 +160,18 @@ public class CartController {
 
     /**
      * 单选选购物车中的商品
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping("select.do")
     @ResponseBody
-    public ServerResponse<CartVo> select(HttpSession session,Integer productId){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
+    public ServerResponse<CartVo> select(HttpServletRequest request,Integer productId){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);        if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.selectOrUnselect(user.getId(),productId,Const.Cart.CHECKD);
@@ -217,14 +180,18 @@ public class CartController {
 
     /**
      * 单反选购物车中的商品
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping("un_select.do")
     @ResponseBody
-    public ServerResponse<CartVo> unSelectAll(HttpSession session,Integer productId){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
+    public ServerResponse<CartVo> unSelectAll(HttpServletRequest request,Integer productId){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);        if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.selectOrUnselect(user.getId(),productId,Const.Cart.UN_CHECKD);
@@ -232,13 +199,18 @@ public class CartController {
 
     /**
      * 查询购物车中的商品数量
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping("get_cart_product_count.do")
     @ResponseBody
-    public ServerResponse<Integer> getCartProductCount(HttpSession session){
-        User user =(User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<Integer> getCartProductCount(HttpServletRequest request){
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
+        }
+        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createBySuccess(0);
         }
