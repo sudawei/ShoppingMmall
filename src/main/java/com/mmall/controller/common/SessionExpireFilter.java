@@ -5,6 +5,7 @@ import com.mmall.pojo.User;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
 import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.*;
@@ -29,12 +30,12 @@ public class SessionExpireFilter implements Filter {
         String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isNotEmpty(loginToken)){
             //从redis中取出对应的值
-            String userJsdnStr = RedisPoolUtil.get(loginToken);
+            String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
             //反序列化为user对象
             User user = JsonUtil.string2Obj(userJsdnStr, User.class);
             if(user != null){
                 //user不为空，则重置session的有效时间
-                RedisPoolUtil.expire(loginToken, Const.RedisCacheExTime.REDIS_SESSION_EXTIME);
+                RedisShardedPoolUtil.expire(loginToken, Const.RedisCacheExTime.REDIS_SESSION_EXTIME);
             }
         }
         filterChain.doFilter(servletRequest,servletResponse);

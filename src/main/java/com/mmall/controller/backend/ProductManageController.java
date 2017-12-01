@@ -9,10 +9,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
-import com.mmall.util.CookieUtil;
-import com.mmall.util.JsonUtil;
-import com.mmall.util.PropertiesUtil;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +28,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/manage/product/")
-public class ProductMnangeConroller {
+public class ProductManageController {
 
     @Autowired
     private IUserService iUserService;
@@ -48,12 +45,12 @@ public class ProductMnangeConroller {
      */
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse prodeuctSave(HttpServletRequest request, Product product){
+    public ServerResponse productSave(HttpServletRequest request, Product product){
         String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
@@ -80,7 +77,7 @@ public class ProductMnangeConroller {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
@@ -107,7 +104,7 @@ public class ProductMnangeConroller {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
@@ -136,7 +133,7 @@ public class ProductMnangeConroller {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
         }
@@ -165,7 +162,7 @@ public class ProductMnangeConroller {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
         }
@@ -190,7 +187,7 @@ public class ProductMnangeConroller {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
@@ -229,7 +226,7 @@ public class ProductMnangeConroller {
             resultMap.put("msg","请登录");
             return resultMap;
         }
-        String userJsdnStr = RedisPoolUtil.get(loginToken);
+        String userJsdnStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsdnStr, User.class);
         if(user == null){
             resultMap.put("success",false);
