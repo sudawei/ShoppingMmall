@@ -12,11 +12,10 @@
     <context:component-scan base-package="com.mmall" annotation-config="true"></context:component-scan>
 
     <!--<context:annotation-config/>-->
-    <!--<aop:aspectj-autoproxy/>-->
+    <aop:aspectj-autoproxy/>
 
 
-
-
+    <import resource="applicationContext-spring-session.xml"/>
     <import resource="applicationContext-datasource.xml"/>
 
 
