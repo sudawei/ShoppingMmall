@@ -43,7 +43,7 @@ public class CategoryManagerController {
     @ResponseBody
     public ServerResponse addCategory(HttpServletRequest request, String categoryName,
                                       @RequestParam(value = "parentId",defaultValue = "0") int parentId){
-        String loginToken = CookieUtil.readLoginToken(request);
+        /*String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
@@ -58,7 +58,10 @@ public class CategoryManagerController {
             return iCategoryService.addCategory(categoryName,parentId);
         }else {
             return  ServerResponse.createByErrorMessage("不是管理员权限！");
-        }
+        }*/
+
+        //全部通过拦截器AuthorityInterceptor验证是否登录以及权限
+        return iCategoryService.addCategory(categoryName,parentId);
     }
 
     /**
@@ -71,7 +74,7 @@ public class CategoryManagerController {
     @RequestMapping("set_category_name.do")
     @ResponseBody
     public ServerResponse setCategoryName(HttpServletRequest request ,Integer categoryId,String categoryName){
-        String loginToken = CookieUtil.readLoginToken(request);
+       /* String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
@@ -86,7 +89,10 @@ public class CategoryManagerController {
             return iCategoryService.updateCategoryName(categoryId,categoryName);
         }else {
             return  ServerResponse.createByErrorMessage("不是管理员权限！");
-        }
+        }*/
+
+        //全部通过拦截器AuthorityInterceptor验证是否登录以及权限
+        return iCategoryService.updateCategoryName(categoryId,categoryName);
     }
 
     /**
@@ -99,7 +105,7 @@ public class CategoryManagerController {
     @ResponseBody
     public ServerResponse getChildrenParallelCategory(HttpServletRequest request ,
                                                       @RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
-        String loginToken = CookieUtil.readLoginToken(request);
+        /*String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
@@ -114,7 +120,10 @@ public class CategoryManagerController {
             return iCategoryService.getChildrenParallelCategory(categoryId);
         }else {
             return  ServerResponse.createByErrorMessage("不是管理员权限！");
-        }
+        }*/
+
+        //全部通过拦截器AuthorityInterceptor验证是否登录以及权限
+        return iCategoryService.getChildrenParallelCategory(categoryId);
     }
 
     /**
@@ -127,7 +136,7 @@ public class CategoryManagerController {
     @ResponseBody
     public ServerResponse getCategoryAndDeepChildrenCategory(HttpServletRequest request,
                                                       @RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
-        String loginToken = CookieUtil.readLoginToken(request);
+        /*String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取当前用户的信息");
         }
@@ -142,7 +151,11 @@ public class CategoryManagerController {
             return iCategoryService.getCategoryAndDeepChildrenCategory(categoryId);
         }else {
             return  ServerResponse.createByErrorMessage("不是管理员权限！");
-        }
+        }*/
+
+
+        //全部通过拦截器AuthorityInterceptor验证是否登录以及权限
+        return iCategoryService.getCategoryAndDeepChildrenCategory(categoryId);
     }
 
 
